@@ -1,0 +1,118 @@
+---
+title: "p8105_hw1_to2345"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load library:
+```{r}
+library(tidyverse)
+```
+
+
+## Problem 1: 
+**Create a data frame comprised of:**
+
+*   a random sample of size 8 from a standard Normal distribution
+*   a logical vector indicating whether elements of the sample are greater than 0
+*   a character vector of length 8
+*   a factor vector of length 8, with 3 different factor “levels”
+```{r question_1}
+set.seed(1)
+dataframe_1 = tibble(
+  random_sample = rnorm(8, sd = 1),
+  vec_logic = random_sample > 0,
+  vec_char = character(8),
+  vec_factor = factor(c(1,2,2,3,1,2,3,3))
+)
+
+```
+
+
+
+**Take the mean of each variables:**
+
+1.   The mean of the variable random_sample is `r round(mean(pull(dataframe_1, random_sample)), digits = 3)`.
+2.   The mean of the variable vec_logic is `r round(mean(pull(dataframe_1, vec_logic)), digits = 3)`.
+3.   The mean of the variable vec_char is `r round(mean(pull(dataframe_1, vec_char)), digits = 3)`.
+4.   The mean of the variable vec_factor is `r round(mean(pull(dataframe_1, vec_factor)), digits = 3)`.
+
+_We can see that the means of the created randome sample and the logic vector works. Yet, the means of the character vector and the factor vector does not work._
+
+
+
+**Convert the logical vector to other data types, and multiply the random sample**
+
+*   convert the logical vector to numeric, and multiply the random sample by the result
+*   convert the logical vector to a factor, and multiply the random sample by the result
+*   convert the logical vector to a factor and then convert the result to numeric, and multiply the random sample by the result
+
+```{r}
+log_to_num = as.numeric(pull(dataframe_1, vec_logic))
+log_to_factor = as.factor(pull(dataframe_1, vec_logic))
+factor_to_num = as.numeric(as.factor(pull(dataframe_1, vec_logic)))
+```
+
+1.   The result of multiply the random sample by the new numeric vector is `r round(log_to_num*pull(dataframe_1, random_sample), digit = 3)`.
+2.   The result of multiply the random sample by the new factor  is `r round(log_to_factor*pull(dataframe_1, random_sample), digit = 3)`.
+2.   The result of multiply the random sample by the new numeric vector which is converted from a factor is `r round(factor_to_num*pull(dataframe_1, random_sample), digit = 3)`.
+
+
+
+## Problem 2: 
+**Create a data frame comprised of:**
+x: a random sample of size 500 from a standard Normal distribution
+y: a random sample of size 500 from a standard Normal distribution
+A logical vector indicating whether x + y > 1
+A numeric vector created by coercing the above logical vector
+A factor vector created by coercing the above logical vector
+
+**create a new dataframe:**
+
+```{r new_dataframe}
+dataframe_2 = tibble(
+  x = rnorm(500, mean = 0, sd = 1),
+  y = rnorm(500, mean = 0, sd = 1),
+  vec_logic = (x+y) > 1,
+  vec_num = as.numeric(vec_logic),
+  vec_factor = as.factor(vec_logic)
+)
+```
+
+**Some description for this dataset**:
+
+    1. The size of the dataset is `r nrow(dataframe_2)` by `r ncol(dataframe_2)`
+    2. The mean, median, and standard deviation of x is `r round(mean(pull(dataframe_2, x)), digits = 3)`, `r round(median(pull(dataframe_2, x)), digits = 3)`, and `r round(sd(pull(dataframe_2, x)), digits = 3)` respectively.
+    3. The proportion of cases for which x + y > 1 is `r 100*sum(with(dataframe_2, x+y > 1))/nrow(dataframe_2)`%
+
+
+**Make a scatterplot of y vs x, color points using the logical variable**
+
+```{r scatterplot_log}
+plot_1 = ggplot(dataframe_2, aes(x = x, y = y, color = vec_logic)) + geom_point()
+```
+
+**Export this scatterplot using ggsave**
+```{r}
+ggsave("plot_hw1.png", plot = plot_1)
+```
+
+
+
+**Make a scatterplot of y vs x, color points using the numeric variable**
+
+```{r scatterplot_num}
+ggplot(dataframe_2, aes(x = x, y = y, color = vec_num)) + geom_point()
+```
+
+
+**Make a scatterplot of y vs x, color points using the factor variable**
+
+```{r scatterplot_factor}
+ggplot(dataframe_2, aes(x = x, y = y, color = vec_factor)) + geom_point()
+```
+
+
